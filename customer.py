@@ -122,6 +122,7 @@ class Customer(AbstractCustomer):
         self.__list_of_acounts = []
         self.__closed_accounts = []
         self.__isUserVerified = False
+    
 
     def add_account(self, account):
         self.__list_of_acounts.append(account)
@@ -140,3 +141,19 @@ class Customer(AbstractCustomer):
 
     def set_Unverified(self):
         self.__isUserVerified = False
+
+    def convert_to_dictionary(self):
+        return {str(self.get_username()): {
+            "id": self.get_id(),
+            "name": self.get_name(),
+            "address": self.get_address(),
+            "birthdate": self.get_birth_date(),
+            "gender": self.get_gender(),
+            "nationality": self.get_nationality(),
+            "cpnumber": self.get_cp_number(),
+            "emailaddress": self.get_email_address(),
+            "username": self.get_username(),
+            "password": self.get_password(),
+            "listofaccounts": self.get_list_of_accounts(),
+            "verified": self.get_isUserVerified(),
+        }}

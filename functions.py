@@ -1,5 +1,7 @@
 from time import strftime
 from datetime import datetime
+import os
+import json
 
 def current_time(time_label):
     time_string = strftime("%I:%M:%S %p")
@@ -18,3 +20,47 @@ def greet():
        return "Good Afternoon!"
     else:
         return "Good Evening!"
+    
+def save_customer_data(person_data):
+    if os.path.exists("person_data.json"):
+        with open("person_data.json", "r") as file:
+            existing_data = json.load(file)
+            existing_data.update(person_data)
+        
+        with open("person_data.json", "w") as file:
+            json.dump(existing_data, file, indent=4)
+            file.write("\n")
+    else:
+        with open("person_data.json", "w") as file:
+            json.dump(person_data, file, indent=4)
+            file.write("\n")
+
+
+def load_customer_data():
+    if os.path.exists("person_data.json"):
+        with open("person_data.json", "r") as file:
+            return json.load(file)
+    else:
+        return {}
+    
+def save_savingsaccount_data(account_data):
+    if os.path.exists("savingsaccount_data.json"):
+        with open("savingsaccount_data.json") as file:
+            existing_data = json.load(file)
+            existing_data.update(account_data)
+
+        with open("savingsaccount_data.json", "w") as file:
+            json.dump(account_data, file, indent=4)
+            file.write("\n")
+    else:
+        with open("savingsaccount_data.json", "w") as file:
+            json.dump(account_data, file, indent=4)
+            file.write("\n")
+
+def load_savingsaccount_data():
+    if os.path.exists("savingsaccount_data.json"):
+        with open("savingsaccount_data.json", "r") as file:
+            return json.load(file)
+    else:
+        return {}
+    

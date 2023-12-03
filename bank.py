@@ -1,8 +1,10 @@
+from functions import load_customer_data, load_savingsaccount_data
+
 class Bank:
-    __savingsAccounts = []
+    __savingsAccounts = load_savingsaccount_data()
     __checkingAccounts = []
     __jointAccounts = []
-    __customers =[]
+    __customers = load_customer_data()
 
     @staticmethod
     def get_list_savingsAccounts():

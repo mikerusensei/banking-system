@@ -52,6 +52,15 @@ class AbstractAccount(InterfaceAccount):
 
     def set_close(self):
         self.__status = 'closed'
+
+    def convert_to_dictionary(self):
+        return {str(self.get_id()): {
+            "accountid": self.get_id(),
+            "accounttype": self.get_accountType(),
+            "accountbalance": self.get_accountBalance(),
+            "accountholder/s": self.get_accountHolders(),
+            "accountstatus": self.get_status(),
+        }}
         
 class SavingsAccount(AbstractAccount):
     def __init__(self, id) -> None:
