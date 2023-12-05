@@ -29,11 +29,9 @@ def save_customer_data(person_data):
         
         with open("person_data.json", "w") as file:
             json.dump(existing_data, file, indent=4)
-            file.write("\n")
     else:
         with open("person_data.json", "w") as file:
             json.dump(person_data, file, indent=4)
-            file.write("\n")
 
 
 def load_customer_data():
@@ -45,17 +43,15 @@ def load_customer_data():
     
 def save_savingsaccount_data(account_data):
     if os.path.exists("savingsaccount_data.json"):
-        with open("savingsaccount_data.json") as file:
+        with open("savingsaccount_data.json", "r") as file:
             existing_data = json.load(file)
             existing_data.update(account_data)
 
         with open("savingsaccount_data.json", "w") as file:
             json.dump(account_data, file, indent=4)
-            file.write("\n")
     else:
         with open("savingsaccount_data.json", "w") as file:
             json.dump(account_data, file, indent=4)
-            file.write("\n")
 
 def load_savingsaccount_data():
     if os.path.exists("savingsaccount_data.json"):
