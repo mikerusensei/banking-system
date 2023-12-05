@@ -1,18 +1,18 @@
-from functions import load_customer_data, load_savingsaccount_data
+from command import Load_CustomerData, Load_SAData, Load_CAData
 
 class Bank:
-    __savingsAccounts = load_savingsaccount_data()
-    __checkingAccounts = []
+    __savingsAccounts = Load_SAData()
+    __checkingAccounts = Load_CAData()
     __jointAccounts = []
-    __customers = load_customer_data()
+    __customers = Load_CustomerData()
 
     @staticmethod
     def get_list_savingsAccounts():
-        return Bank.__savingsAccounts
+        return Bank.__savingsAccounts.execute()
     
     @staticmethod
     def get_list_checkingAccounts():
-        return Bank.__checkingAccounts
+        return Bank.__checkingAccounts.execute()
     
     @staticmethod
     def get_list_jointAccounts():
@@ -20,4 +20,4 @@ class Bank:
     
     @staticmethod
     def get_list_customers():
-        return Bank.__customers
+        return Bank.__customers.execute()
