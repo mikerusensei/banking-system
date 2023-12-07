@@ -6,7 +6,7 @@ from view_profile import View_Profile_Window
 from enroll_account import Enroll_Account_Window
 from check_balance import Check_Balance_Window
 from deposit_window import Deposit_Window
-#from withdraw_window import Withdraw_Window
+from withdraw_window import Withdraw_Window
 from widgetgenerator import LabelGeneratorPack, ButtonGeneratorPack
 
 current_date = datetime.now()
@@ -100,10 +100,10 @@ class Login_Menu(tk.Toplevel):
             messagebox.showerror("Error", "You don't have an account enrolled!")
 
     def show_withdraw_window(self):
-        isUserVerified = self.customer.get_isUserVerified()
+        isUserVerified = self.customer_value['verified']
         if isUserVerified == True:
             if not self.withdraw_window:
-                self.withdraw_window = Withdraw_Window(self, self.customer)
+                self.withdraw_window = Withdraw_Window(self, self.customer_key, self.customer_value)
             self.iconify()
             self.withdraw_window.lift()
         else:

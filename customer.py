@@ -155,5 +155,6 @@ class Customer(AbstractCustomer):
             "username": self.get_username(),
             "password": self.get_password(),
             "listofaccounts": self.get_list_of_accounts(),
+            "closedaccounts": self.get_closed_accounts(),
             "verified": self.get_isUserVerified(),
         }}

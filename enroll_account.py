@@ -10,8 +10,7 @@ class Enroll_Account_Window(tk.Toplevel):
         self.customer_value = customer_value
         self.__add_labels()
         self.__add_buttons()
-        self.__configure_window()
-        
+        self.__configure_window() 
 
     def __configure_window(self):
         self.title("Enroll Account")

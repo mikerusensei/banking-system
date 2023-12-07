@@ -1,9 +1,11 @@
 import tkinter as tk
+from update_profile_window import Profile_Update
 from widgetgenerator import LabelGeneratorGrid, ButtonGeneratorGrid
 
 class View_Profile_Window(tk.Toplevel):
     def __init__(self, master=None, customer_key=None, customer_value=None):
         super().__init__(master)
+        self.update_profile_window = None
         self.customer_key = customer_key
         self.customer_value = customer_value
         self.__add_labels()
@@ -57,6 +59,7 @@ class View_Profile_Window(tk.Toplevel):
     def __add_buttons(self):
         button_configuration = [
             {"text": "Return", "command": self.command_return, "column": 0, "row": 12, "width": 10, "bg": "#07BEB8"},
+            {"text": "Update", "command": self.show_updateprofile_window, "column": 1, "row": 12, "width": 10, "bg": "#07BEB8"}
         ]
 
         for config in button_configuration:
@@ -67,7 +70,11 @@ class View_Profile_Window(tk.Toplevel):
                 .set_width(config["width"])\
                 .set_bg_color(config["bg"])\
                 .build()
-            
+
+    def show_updateprofile_window(self):
+        self.update_profile_window = Profile_Update(self.master, self.customer_key, self.customer_value)
+        self.destroy()
+        
     def command_return(self):
         self.master.deiconify()
         self.destroy()

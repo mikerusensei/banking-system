@@ -1,24 +1,19 @@
 import tkinter as tk
-import datetime
-from tkinter import messagebox
+from command import Save_CustomerData
 from widgetgenerator import LabelGeneratorGrid, ButtonGeneratorGrid, EntryGeneratorGrid
-from customer import Customer
-from bank import Bank
-from command import MessageBoxAskQuestion, Save_CustomerData
 
-class Create_Account(tk.Toplevel):
-    def __init__(self, master=None):
+class Profile_Update(tk.Toplevel):
+    def __init__(self, master=None, customer_key=None, customer_value=None):
         super().__init__(master)
-        self.__customers = Bank.get_list_customers()
-        self.today = datetime.date.today()
-        self.current_year = self.today.year
+        self.customer_key = customer_key
+        self.customer_value = customer_value
         self.__add_label()
-        self.__add_entry()
         self.__add_button()
+        self.__add_entry()
         self.__configure_window()
 
     def __configure_window(self):
-        self.title("Foobar's Bank")
+        self.title("Update Profile")
         self.resizable(False, False)
         self.configure(bg="#C4FFF9")
 
@@ -27,7 +22,7 @@ class Create_Account(tk.Toplevel):
 
     def __add_label(self):
         label_configuration = [
-            {"text": "[CREATE ACCOUNT]", "column": 0, "row": 0, "bg": "#C4FFF9"},
+            {"text": "[UPDATE PROFILE]", "column": 0, "row": 0, "bg": "#C4FFF9"},
 
             {"text": "\n[PERSONAL INFORMATION]\n", "column": 0, "row": 1, "bg": "#C4FFF9"},
             {"text": "Full Name:", "column": 0, "row": 2, "bg": "#C4FFF9"},
@@ -88,7 +83,7 @@ class Create_Account(tk.Toplevel):
 
     def __add_button(self):
         button_configuration = [
-            {"text": "Save", "command": self.command_save, "row": 11, "column": 3, "width": 15, "bg": "#07BEB8"},
+            {"text": "Save", "command": self.command_submit, "row": 11, "column": 3, "width": 15, "bg": "#07BEB8"},
             {"text": "Cancel", "command": self.command_cancel, "row": 11, "column": 2, "width": 15, "bg": "#07BEB8"},
         ]
         
@@ -102,46 +97,43 @@ class Create_Account(tk.Toplevel):
                 .build()
 
     def get_inputs(self):
-        __id = f"{self.current_year}-0{len(self.__customers) + 1}"
-        __fullname = self.entries["fullname"].get()
-        __birthdate = self.entries["birthdate"].get()
-        __sex = self.entries["sex"].get()
-        __nationality = self.entries["nationality"].get()
-        __cpnumber = self.entries["cpnumber"].get()
-        __emailaddress = self.entries["emailaddress"].get()
+        self.__fullname = self.entries["fullname"].get()
+        self.__birthdate = self.entries["birthdate"].get()
+        self.__sex = self.entries["sex"].get()
+        self.__nationality = self.entries["nationality"].get()
+        self.__cpnumber = self.entries["cpnumber"].get()
+        self.__emailaddress = self.entries["emailaddress"].get()
 
-        __housenumber = self.entries["housenum"].get()
-        __street = self.entries["street"].get()
-        __subdivision = self.entries["subdivision"].get()
-        __barangay = self.entries["barangay"].get()
-        __municipality = self.entries["municipality"].get()
-        __province = self.entries["province"].get()
-        __fulladdress = f"{__housenumber}, {__street}, {__subdivision}, {__barangay}, {__municipality}, {__province}"
+        self.__housenumber = self.entries["housenum"].get()
+        self.__street = self.entries["street"].get()
+        self.__subdivision = self.entries["subdivision"].get()
+        self.__barangay = self.entries["barangay"].get()
+        self.__municipality = self.entries["municipality"].get()
+        self.__province = self.entries["province"].get()
+        self.__fulladdress = f"{self.__housenumber}, {self.__street}, {self.__subdivision}, {self.__barangay}, {self.__municipality}, {self.__province}"
 
-        __username = self.entries["username"].get()
-        __password = self.entries["password"].get()
+        self.__username = self.entries["username"].get()
+        self.__password = self.entries["password"].get()
 
-        customer = Customer(__id, __fullname, __fulladdress, __birthdate, __sex, __nationality,
-                                __cpnumber, __emailaddress, __username, __password)
-        return customer
+    def command_submit(self):
+        self.get_inputs()
 
-    def command_save(self):
-        result_instance = MessageBoxAskQuestion("Do you want to proceed?")
-        result = result_instance.execute()
-        if result == "yes":
-            new_customer = self.get_inputs()
-            new_customer_dictionary = new_customer.convert_to_dictionary()
-            self.__customers.update(new_customer_dictionary)
-            save = Save_CustomerData(self.__customers)
-            save.execute()
-            self.master.deiconify()
-            self.destroy()
+        self.customer_value["name"] = self.__fullname
+        self.customer_value["address"] = self.__fulladdress
+        self.customer_value["birthdate"] = self.__birthdate
+        self.customer_value["gender"] = self.__sex
+        self.customer_value["nationality"] = self.__nationality
+        self.customer_value["cpnumber"] = self.__cpnumber
+        self.customer_value["emailaddress"] = self.__emailaddress
+        self.customer_value["username"] = self.__username
+        self.customer_value["password"] = self.__password
+        
+        save_data = Save_CustomerData({self.customer_key: self.customer_value})
+        save_data.execute()
+
+        self.destroy()
+        self.master.deiconify()
 
     def command_cancel(self):
         self.destroy()
         self.master.deiconify()
-
-    def destroy(self):
-        super().destroy()
-        if self.master:
-            self.master.create_account_window = None

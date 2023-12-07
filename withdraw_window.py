@@ -1,10 +1,10 @@
 import tkinter as tk
 from tkinter import messagebox
-from widgetgenerator import FrameGeneratorGrid, LabelGeneratorPack, EntryGeneratorPack, ButtonGeneratorPack
 from bank import Bank
-from command import Save_CustomerData, Save_SAData, Save_CAData
+from command import Save_SAData, Save_CAData, Save_CustomerData
+from widgetgenerator import FrameGeneratorGrid, LabelGeneratorPack, EntryGeneratorPack, ButtonGeneratorPack
 
-class Deposit_Window(tk.Toplevel):
+class Withdraw_Window(tk.Toplevel):
     def __init__(self, master=None, customer_key=None, customer_value=None):
         super().__init__(master)
         self.customer_key = customer_key
@@ -72,7 +72,7 @@ class Deposit_Window(tk.Toplevel):
             
         LabelGeneratorPack(self.deposit_frame)\
             .set_anchor("w")\
-            .set_text("[DEPOSIT]\n")\
+            .set_text("[WITHDRAWAL]\n")\
             .set_bg_color("#C4FFF9")\
             .build()
         
@@ -110,7 +110,7 @@ class Deposit_Window(tk.Toplevel):
                 .set_width(config["width"])\
                 .set_bg_color(config["bg"])\
                 .build()
-    
+            
     def command_submit(self):
         account_id_inputted = self.account_id_entry.get()
         ammount_inputted = self.amount_entry.get()
@@ -123,51 +123,63 @@ class Deposit_Window(tk.Toplevel):
                 if key == account_id_inputted:
                     found_account = True
                     current_balance = int(account_details['accountbalance'])
-                    current_balance += int(ammount_inputted)
+                    current_balance -= int(ammount_inputted)
                     account_details['accountbalance'] = current_balance
 
                     if account_details['accounttype'] == 'Savings Account':
-                        self.__savings_list.update({key: account_details})
-                        save_account = Save_SAData(self.__savings_list)
-                        save_customer = Save_CustomerData({self.customer_key: self.customer_value})
-                        save_account.execute()
-                        save_customer.execute()
-                        self.master.deiconify()
-                        self.destroy()
-                        break
+                        if current_balance == 0:
+                            account_details["accountstatus"] = 'closed'
+                            self.customer_value["closedaccounts"].append({key: account_details})
+                            self.customer_value["listofaccounts"].remove({key: account_details})
+                            self.__savings_list.update({key: account_details})
+                            save_account = Save_SAData(self.__savings_list)
+                            save_customer = Save_CustomerData({self.customer_key: self.customer_value})
+                            save_customer.execute()
+                            save_account.execute()
+                            self.master.deiconify()
+                            self.destroy()
+                            break
+                        else:
+                            self.__savings_list.update({key: account_details})
+                            save_account = Save_SAData(self.__savings_list)
+                            save_customer = Save_CustomerData({self.customer_key: self.customer_value})
+                            save_account.execute()
+                            save_customer.execute()
+                            self.master.deiconify()
+                            self.destroy()
+                            break
                     elif account_details['accounttype'] == 'Checking Account':
-                        self.__checking_list.update({key: account_details})
-                        save_account = Save_CAData(self.__checking_list)
-                        save_customer = Save_CustomerData({self.customer_key: self.customer_value})
-                        save_account.execute()
-                        save_customer.execute()
-                        self.master.deiconify()
-                        self.destroy()
-                        break
+                        if current_balance == 0:
+                            account_details["accountstatus"] = 'closed'
+                            self.customer_value["closedaccounts"].append(account_details)
+                            self.customer_value["listofaccounts"].remove(account)
+                            self.__checking_list.update({key: account_details})
+                            save_account = Save_CAData(self.__checking_list)
+                            save_customer = Save_CustomerData({self.customer_key: self.customer_value})
+                            save_customer.execute()
+                            save_account.execute()
+                            self.master.deiconify()
+                            self.destroy()
+                            break
+                        else:
+                            self.__checking_list.update({key: account_details})
+                            save_account = Save_CAData(self.__checking_list)
+                            save_customer = Save_CustomerData({self.customer_key: self.customer_value})
+                            save_account.execute()
+                            save_customer.execute()
+                            self.master.deiconify()
+                            self.destroy()
+                            break
 
         if not found_account:
             messagebox.showerror("Error", f"Account was not found!")
 
-
-        '''for account in accounts:
-            if account.get_id() == account_id_inputted:
-                found_account = True
-                current_balance = int(account.get_accountBalance())
-                current_balance += int(ammount_inputted)
-                account.set_accountBalance(current_balance)
-                self.master.deiconify()
-                self.destroy()
-        
-
-        if not found_account:
-            messagebox.showerror("Error", f"Account was not found!")
-        '''
     def command_return(self):
         self.master.deiconify()
         self.destroy()
-            
+
     def destroy(self):
         super().destroy()
         if self.master:
-            self.master.deposit_window = None
+            self.master.withdraw_window = None
     
